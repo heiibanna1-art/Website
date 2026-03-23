@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReWear Hub | Reimagine Fashion Sustainably</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+.glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
+.hero-gradient { background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); }
+.card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #4a7c59; border-radius: 10px; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// --- Icons (Simplified Lucide Mocks) ---
+const Icon = ({ name }) => {
+const icons = {
+shopping: "M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0",
+truck: "M1 3h15v13H1z M16 8h4l3 3v5h-7V8z M5 18a2 2 0 100-4 2 2 0 000 4z M19 18a2 2 0 100-4 2 2 0 000 4z",
+scissors: "M6 15a3 3 0 100-6 3 3 0 000 6zm0 0l4-4m8 4a3 3 0 100-6 3 3 0 000 6zm0 0l-4-4m-2 2l4 4m-4-4l-4 4",
+recycle: "M7 2h10l4 6-9 14L3 8z",
+search: "M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+};
+return (
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="inline-block">
+<path d={icons[name] || ""} />
+</svg>
+);
+};
+
+const App = () => {
+const [page, setPage] = useState('home');
+const [cartCount, setCartCount] = useState(0);
+
+const Navbar = () => (
+<nav class="sticky top-0 z-50 glass border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-2 cursor-pointer" onClick={() => setPage('home')}>
+<div class="bg-emerald-700 text-white p-2 rounded-lg"><Icon name="recycle" /></div>
+<span class="text-2xl font-bold tracking-tight text-emerald-900">ReWear <span class="text-emerald-600">Hub</span></span>
+</div>
+<div class="hidden md:flex gap-8 font-medium text-slate-600">
+<button onClick={() => setPage('shop')} class="hover:text-emerald-700">Shop Thrift</button>
+<button onClick={() => setPage('sell')} class="hover:text-emerald-700">Sell Clothes</button>
+<button onClick={() => setPage('customize')} class="hover:text-emerald-700">Custom Studio</button>
+</div>
+<div class="flex gap-4 items-center">
+<Icon name="search" />
+<div class="relative cursor-pointer" onClick={() => setPage('cart')}>
+<Icon name="shopping" />
+<span class="absolute -top-2 -right-2 bg-emerald-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">{cartCount}</span>
+</div>
+</div>
+</nav>
+);
+
+const HomePage = () => (
+<div class="animate-fadeIn">
+{/* Hero Section */}
+<section class="hero-gradient py-20 px-6 text-center">
+<h1 class="text-5xl md:text-7xl font-bold text-slate-900 mb-6">Reimagine Fashion <br/><span class="text-emerald-700 underline decoration-emerald-200">Sustainably.</span></h1>
+<p class="text-lg text-slate-600 max-w-2xl mx-auto mb-10">The world's first smart thrift ecosystem connecting buyers, sellers, and local artisans to breathe new life into every garment.</p>
+<div class="flex flex-wrap justify-center gap-4">
+<button onClick={() => setPage('shop')} class="bg-emerald-800 text-white px-8 py-4 rounded-full font-bold shadow-lg hover:bg-emerald-900 transition">Shop Collections</button>
+<button onClick={() => setPage('sell')} class="bg-white text-emerald-800 border-2 border-emerald-800 px-8 py-4 rounded-full font-bold hover:bg-emerald-50 transition">Start Selling</button>
+</div>
+</section>
+
+{/* How it Works - The Cycle */}
+<section class="py-20 px-6 bg-white">
+<h2 class="text-3xl font-bold text-center mb-16">The ReWear Lifecycle</h2>
+<div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-7 gap-4 items-center max-w-7xl mx-auto">
+{[
+{t: "Upload", d: "List unused items"},
+{t: "Quality Check", d: "Warehouse inspection"},
+{t: "Sanitized", d: "Professional cleaning"},
+{t: "Listed", d: "Live on marketplace"},
+{t: "Purchased", d: "Find a new home"},
+{t: "Tailored", d: "Custom fit & style"},
+{t: "Delivered", d: "Sustainably shipped"}
+].map((step, i) => (
+<React.Fragment key={i}>
+<div class="text-center p-4">
+<div class="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-3 font-bold">{i+1}</div>
+<h4 class="font-bold text-sm">{step.t}</h4>
+<p class="text-xs text-slate-500 mt-1">{step.d}</p>
+</div>
+{i < 6 && <div class="hidden lg:block h-px bg-slate-200 w-full"></div>}
+</React.Fragment>
+))}
+</div>
+</section>
+
+{/* Featured Categories */}
+<section class="py-20 px-6 bg-slate-50">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+<div class="h-64 rounded-2xl bg-[url('https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80')] bg-cover flex items-end p-6">
+<button class="bg-white/90 backdrop-blur px-6 py-2 rounded-lg font-bold">Women</button>
+</div>
+<div class="h-64 rounded-2xl bg-[url('https://images.unsplash.com/photo-1505022610485-0249ba5b3675?auto=format&fit=crop&w=800&q=80')] bg-cover flex items-end p-6">
+<button class="bg-white/90 backdrop-blur px-6 py-2 rounded-lg font-bold">Men</button>
+</div>
+<div class="h-64 rounded-2xl bg-[url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80')] bg-cover flex items-end p-6">
+<button class="bg-white/90 backdrop-blur px-6 py-2 rounded-lg font-bold">Accessories</button>
+</div>
+</div>
+</section>
+</div>
+);
+
+const ShopPage = () => {
+const products = [
+{ id: 1, name: "Vintage Denim Jacket", price: 45, cond: "Excellent", img: "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=500&q=80" },
+{ id: 2, name: "Woolen Overcoat", price: 89, cond: "Gently Used", img: "https://images.unsplash.com/photo-1539533377285-3412704e5a44?w=500&q=80" },
+{ id: 3, name: "Linen Summer Dress", price: 32, cond: "Brand New", img: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=500&q=80" },
+{ id: 4, name: "Canvas Tote Bag", price: 15, cond: "Fair", img: "https://images.unsplash.com/photo-1544816153-12ad5d71431e?w=500&q=80" },
+];
+return (
+<div class="p-8 max-w-7xl mx-auto animate-fadeIn">
+<div class="flex justify-between items-end mb-10">
+<div>
+<h2 class="text-3xl font-bold text-slate-900">Thrift Marketplace</h2>
+<p class="text-slate-500">Quality-checked unique pieces waiting for you.</p>
+</div>
+<div class="flex gap-4">
+<select class="bg-white border p-2 rounded-lg"><option>Price: Low to High</option></select>
+<select class="bg-white border p-2 rounded-lg"><option>Category: All</option></select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+{products.map(p => (
+<div key={p.id} class="bg-white rounded-2xl overflow-hidden shadow-sm card-hover border border-slate-100">
+<img src={p.img} class="h-64 w-full object-cover" />
+<div class="p-4">
+<div class="text-xs font-bold text-emerald-600 mb-1 uppercase tracking-wider">{p.cond}</div>
+<h3 class="font-bold text-lg mb-2">{p.name}</h3>
+<div class="flex justify-between items-center">
+<span class="text-xl font-bold">${p.price}</span>
+<button onClick={() => setPage('product')} class="text-emerald-700 font-semibold text-sm">View Details →</button>
+</div>
+</div>
+</div>
+))}
+</div>
+</div>
+);
+};
+
+const ProductDetail = () => (
+<div class="max-w-6xl mx-auto p-8 grid md:grid-cols-2 gap-12 animate-fadeIn">
+<img src="https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=800&q=80" class="rounded-3xl shadow-xl w-full" />
+<div class="flex flex-col justify-center">
+<span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold w-fit mb-4">VERIFIED QUALITY</span>
+<h1 class="text-4xl font-bold mb-4">Vintage Denim Jacket</h1>
+<p class="text-3xl font-light text-slate-700 mb-6">$45.00</p>
+<p class="text-slate-600 mb-8 leading-relaxed">This classic piece has been professionally sanitized and inspected at our central warehouse. Made from premium 100% cotton denim, it features a timeless boxy fit. Perfect for layering.</p>
+
+<div class="bg-slate-100 p-6 rounded-2xl mb-8 border border-slate-200">
+<h4 class="font-bold mb-2 flex items-center gap-2"><Icon name="scissors" /> Why Customize?</h4>
+<p class="text-sm text-slate-600">Don't like the fit? Want a different color? Select "Customize" to connect with our local designers for size adjustments or bespoke embroidery.</p>
+</div>
+
+<div class="flex gap-4">
+<button onClick={() => {setCartCount(c=>c+1); setPage('cart')}} class="flex-1 bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-slate-800 transition">Add to Cart</button>
+<button onClick={() => setPage('customize')} class="flex-1 bg-emerald-700 text-white py-4 rounded-xl font-bold hover:bg-emerald-800 transition">Customize This Item</button>
+</div>
+</div>
+</div>
+);
+
+const CustomizePage = () => (
+<div class="max-w-5xl mx-auto p-8 animate-fadeIn">
+<div class="text-center mb-12">
+<h2 class="text-4xl font-bold text-slate-900">Artisan Studio</h2>
+<p class="text-slate-500">Connect with local experts to make your clothes truly yours.</p>
+</div>
+
+<div class="grid md:grid-cols-2 gap-8">
+<div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+<h3 class="text-2xl font-bold mb-6 flex items-center gap-3 text-emerald-800"><Icon name="scissors" /> Local Tailors</h3>
+<div class="space-y-4">
+{[
+{n: "Maria's Alterations", d: "1.2 miles away", p: "Specialist in size adjustments and repair."},
+{n: "The Stitch Hub", d: "3.5 miles away", p: "Quick turnaround for zippers and hemming."}
+].map((t, i) => (
+<div key={i} class="p-4 border rounded-xl flex justify-between items-center hover:bg-slate-50 cursor-pointer">
+<div>
+<h5 class="font-bold">{t.n}</h5>
+<p class="text-xs text-emerald-600">{t.d}</p>
+<p class="text-sm text-slate-500">{t.p}</p>
+</div>
+<button class="bg-slate-900 text-white text-xs px-4 py-2 rounded-lg">Call</button>
+</div>
+))}
+</div>
+</div>
+
+<div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+<h3 class="text-2xl font-bold mb-6 flex items-center gap-3 text-purple-800"><Icon name="shopping" /> Creative Designers</h3>
+<div class="space-y-4">
+{[
+{n: "Alex Chen Studios", d: "Downtown", p: "Custom embroidery and hand-painted graphics."},
+{n: "Eco-Dye Lab", d: "Uptown", p: "Natural garment dyeing and color restoration."}
+].map((t, i) => (
+<div key={i} class="p-4 border rounded-xl flex justify-between items-center hover:bg-slate-50 cursor-pointer">
+<div>
+<h5 class="font-bold">{t.n}</h5>
+<p class="text-xs text-purple-600">{t.d}</p>
+<p class="text-sm text-slate-500">{t.p}</p>
+</div>
+<button class="bg-slate-900 text-white text-xs px-4 py-2 rounded-lg">Consult</button>
+</div>
+))}
+</div>
+</div>
+</div>
+</div>
+);
+
+const SellPage = () => (
+<div class="max-w-4xl mx-auto p-8 animate-fadeIn">
+<div class="bg-emerald-900 text-white p-12 rounded-3xl mb-12 relative overflow-hidden">
+<div class="relative z-10">
+<h2 class="text-4xl font-bold mb-4">Turn Your Closet Into Cash</h2>
+<p class="text-emerald-100 text-lg">We handle the cleaning, the listing, and the logistics. You just upload and earn.</p>
+</div>
+<div class="absolute right-[-20px] top-[-20px] opacity-10"><Icon name="recycle" /></div>
+</div>
+
+<div class="grid md:grid-cols-3 gap-8 mb-12 text-center">
+<div class="p-6 bg-white rounded-2xl shadow-sm">
+<h4 class="font-bold mb-2">1. Photo & List</h4>
+<p class="text-sm text-slate-500">Take 3 clear photos and describe the condition.</p>
+</div>
+<div class="p-6 bg-white rounded-2xl shadow-sm border-2 border-emerald-500">
+<h4 class="font-bold mb-2">2. Ship to Us</h4>
+<p class="text-sm text-slate-500">Send items to our warehouse for free inspection.</p>
+</div>
+<div class="p-6 bg-white rounded-2xl shadow-sm">
+<h4 class="font-bold mb-2">3. Get Paid</h4>
+<p class="text-sm text-slate-500">Earnings transfer instantly once item is accepted.</p>
+</div>
+</div>
+
+<form class="bg-white p-8 rounded-3xl shadow-lg border border-slate-100">
+<div class="space-y-6">
+<div>
+<label class="block font-bold mb-2">Garment Type</label>
+<input type="text" placeholder="e.g. Levi's 501 Jeans" class="w-full border p-4 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none" />
+</div>
+<div class="border-2 border-dashed border-slate-300 p-12 text-center rounded-2xl hover:bg-slate-50 cursor-pointer">
+<p class="text-slate-400 font-medium">Click to upload photos or drag and drop</p>
+</div>
+<button type="button" class="w-full bg-emerald-700 text-white py-4 rounded-xl font-bold text-lg">Submit for Approval</button>
+</div>
+</form>
+</div>
+);
+
+const CartPage = () => (
+<div class="max-w-6xl mx-auto p-8 animate-fadeIn grid md:grid-cols-3 gap-8">
+<div class="md:col-span-2">
+<h2 class="text-3xl font-bold mb-8">Your Cart ({cartCount})</h2>
+{cartCount > 0 ? (
+<div class="bg-white p-6 rounded-3xl border border-slate-200">
+<div class="flex gap-6 pb-6 border-b">
+<img src="https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?w=200&q=80" class="h-24 w-24 rounded-xl object-cover" />
+<div class="flex-1">
+<h4 class="font-bold text-xl">Vintage Denim Jacket</h4>
+<p class="text-slate-500 text-sm">Size: M | Color: Light Blue</p>
+<p class="text-emerald-700 font-bold mt-2">$45.00</p>
+</div>
+<button class="text-slate-400">Remove</button>
+</div>
+</div>
+) : (
+<div class="text-center py-20 bg-white rounded-3xl border-2 border-dashed">
+<p class="text-slate-400">Your cart is empty. Start shopping!</p>
+</div>
+)}
+</div>
+<div class="bg-white p-8 rounded-3xl border border-slate-200 h-fit sticky top-24">
+<h3 class="font-bold text-xl mb-6">Summary</h3>
+<div class="space-y-4 mb-6">
+<div class="flex justify-between text-slate-600"><span>Subtotal</span><span>${cartCount * 45}</span></div>
+<div class="flex justify-between text-slate-600"><span>Sustainability Fee</span><span>$2.00</span></div>
+<div class="flex justify-between text-slate-600 font-bold text-xl pt-4 border-t"><span>Total</span><span>${cartCount > 0 ? (cartCount * 45) + 2 : 0}</span></div>
+</div>
+<button class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold">Secure Checkout</button>
+<p class="text-center text-xs text-slate-400 mt-4 flex items-center justify-center gap-1">
+<Icon name="truck" /> Carbon Neutral Shipping
+</p>
+</div>
+</div>
+);
+
+return (
+<div class="min-h-screen">
+<Navbar />
+<main>
+{page === 'home' && <HomePage />}
+{page === 'shop' && <ShopPage />}
+{page === 'product' && <ProductDetail />}
+{page === 'customize' && <CustomizePage />}
+{page === 'sell' && <SellPage />}
+{page === 'cart' && <CartPage />}
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-20 px-6 mt-20">
+<div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+<div class="col-span-1 md:col-span-2">
+<h4 class="text-white text-2xl font-bold mb-6 italic">ReWear Hub</h4>
+<p class="max-w-sm mb-6">Changing the way we consume fashion. From closet to community, we make sustainability the standard, not the alternative.</p>
+<p class="text-emerald-500 font-bold underline cursor-pointer">Support: +1 (800) REWEAR-HELP</p>
+</div>
+<div>
+<h5 class="text-white font-bold mb-4">Platform</h5>
+<ul class="space-y-2">
+<li class="hover:text-white cursor-pointer" onClick={()=>setPage('shop')}>Marketplace</li>
+<li class="hover:text-white cursor-pointer" onClick={()=>setPage('sell')}>Sell with us</li>
+<li class="hover:text-white cursor-pointer" onClick={()=>setPage('customize')}>Local Designers</li>
+</ul>
+</div>
+<div>
+<h5 class="text-white font-bold mb-4">Support</h5>
+<ul class="space-y-2">
+<li class="hover:text-white cursor-pointer">Shipping Policy</li>
+<li class="hover:text-white cursor-pointer">Quality Guarantee</li>
+<li class="hover:text-white cursor-pointer">FAQs</li>
+</ul>
+</div>
+</div>
+<div class="max-w-7xl mx-auto mt-20 pt-8 border-t border-slate-800 text-sm flex justify-between">
+<p>© 2026 ReWear Hub Inc. All rights reserved.</p>
+<div class="flex gap-6"><span>Privacy</span><span>Terms</span></div>
+</div>
+</footer>
+</div>
+);
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>
